@@ -2,7 +2,7 @@
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from pizzadb.models import Pizza, Skladnik, PizzaKlienta
+from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 
@@ -58,3 +58,12 @@ def log( request ):
 			return HttpResponse( "BAN!!!" )
 	else:
 		return HttpResponse( "Nie ma takiego" )
+
+def obsluga(request):
+	# a co jesli nie jestem pracownikiem?
+	if(request.user.is_anonymous()):
+		return render(request, 'logowanie.html')
+	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user)
+	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True)
+	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )	
+	
