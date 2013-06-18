@@ -78,5 +78,3 @@ def obsluga(request):
 	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user)
 	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True)
 	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )	
-	
->>>>>>> e9f8e97c255691ae50cccffcf87daf6fc2bfa0c9
