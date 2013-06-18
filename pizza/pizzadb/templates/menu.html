@@ -1,0 +1,21 @@
+{% if list %}
+	<h1> Menu </h1>
+	<dl>
+	{% for pizza in list %} 
+		<dt>{{ pizza.nazwa }} {{ pizza.cena }}</dt>
+		<dd>Opis: {{ pizza.opis }}<br>
+			Składniki:
+				{% for skladnik in pizza.skladniki.all %}
+
+				{{ skladnik }},
+
+				{% endfor %}
+			
+		</dd>
+	{% endfor %}
+	</dl>
+{% else %}
+
+<h1> Nie ma pozycji w menu. </h1>
+
+{% endif %}
