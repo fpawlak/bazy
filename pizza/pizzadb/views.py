@@ -2,7 +2,7 @@
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from pizzadb.models import Pizza, Skladnik, PizzaKlienta
+from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 
@@ -37,6 +37,12 @@ def dodajpizze(request):
 		nowa_pizza.skladniki.add(skladnik)
 	return HttpResponseRedirect(reverse(menu))
 
+def mojepizze(request):
+	if(request.user.is_anonymous()):
+		return render(request, 'logowanie.html')
+	pizze = PizzaKlienta.objects.filter(klient=request.user)
+	return render(request, 'mojepizze.html', { 'pizze' : pizze } )
+
 def logowanie( request ):
 	
 	try:
@@ -54,6 +60,7 @@ def log( request ):
 	except ( KeyError ):
 		return render ( request, 'logowanie.html' )
 	else:
+<<<<<<< HEAD
 		uzytkownik = authenticate( username=nazwa, password=haslo )
 		if uzytkownik is not None:
 			if uzytkownik.is_active:
@@ -63,3 +70,15 @@ def log( request ):
 				return render( request, 'logowanie.html', { 'blad' : "Konto jest nieaktywne" } )
 		else:
 			return render( request, 'logowanie.html', { 'blad' : "Dane niepoprawne" } )
+=======
+		return HttpResponse( "Nie ma takiego" )
+
+def obsluga(request):
+	# a co jesli nie jestem pracownikiem?
+	if(request.user.is_anonymous()):
+		return render(request, 'logowanie.html')
+	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user)
+	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True)
+	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )	
+	
+>>>>>>> e9f8e97c255691ae50cccffcf87daf6fc2bfa0c9

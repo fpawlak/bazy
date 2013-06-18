@@ -7,7 +7,7 @@
     Nazwa pizzy: <input type="text" name="NazwaPizzy" value=""><br />
 {% for skladnik in skladniki %}
     <input type="checkbox" name="{{ skladnik.id }}" value="{{ skladnik.nazwa }}" />
-    <label for="skladnik{{ skladnik.id }}">{{ skladnik.nazwa }}</label><br />
+    <label for="skladnik{{ skladnik.id }}">{{ skladnik.nazwa }}; cena: {{ skladnik.cena }}</label><br />
 {% endfor %}
 <input type="submit" value="Dodaj" />
 </form>
