@@ -32,8 +32,9 @@ class Skladnik( models.Model ):
 
 
 class PizzaKlienta( models.Model ):
-	
-	klient = models.ForeignKey( Uzytkownik )
+
+	nazwa = models.CharField( max_length = 20 )
+	klient = models.ForeignKey( User )
 	cena = models.DecimalField( max_digits = 10, decimal_places = 2 )
 	skladniki = models.ManyToManyField( Skladnik )
 

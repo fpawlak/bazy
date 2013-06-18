@@ -1,0 +1,13 @@
+<h1>Stwórz własną pizzę!</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="../dodajpizze/" method="post">
+{% csrf_token %}
+    Nazwa pizzy: <input type="text" name="NazwaPizzy" value=""><br />
+{% for skladnik in skladniki %}
+    <input type="checkbox" name="{{ skladnik.id }}" value="{{ skladnik.nazwa }}" />
+    <label for="skladnik{{ skladnik.id }}">{{ skladnik.nazwa }}</label><br />
+{% endfor %}
+<input type="submit" value="Dodaj" />
+</form>
