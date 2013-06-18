@@ -3,11 +3,8 @@
 from datetime import date
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-<<<<<<< HEAD
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, User
-=======
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, Zamowienie_Pizza, Zamowienie_PizzaKlienta, Zamowienie_Dodatek, Dodatek
->>>>>>> d15cab7954e7b4bc4275fcbba533f2aaf0d55fb6
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
