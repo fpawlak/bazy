@@ -19,3 +19,11 @@
 <h1> Nie ma pozycji w menu. </h1>
 
 {% endif %}
+
+<p>{{ zalogowany }}</p>
+
+{% if zalogowany %}
+<a href="{% url 'pizzadb.views.wyloguj' %}">Wyloguj</a>
+{% else %}
+<a href="{% url 'pizzadb.views.logowanie' %}">Zaloguj</a>
+{% endif %}

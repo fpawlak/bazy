@@ -4,14 +4,17 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 def index( request ):
 	return HttpResponse( "LOL jakie to jest zjebane." )
 
 def menu( request ):
 	p = Pizza.objects.all()
-	return render( request, 'menu.html', { 'list' : p } )
+	if request.user.is_authenticated():
+		return render( request, 'menu.html', { 'list' : p, 'zalogowany' : 'asdasd' } )
+	else:
+		return render( request, 'menu.html', { 'list' : p } )
 
 # def order(request):
 # 	menu = Pizza.objects.all()
@@ -52,6 +55,10 @@ def logowanie( request ):
 	else: 
 		return render( request, 'logowanie.html', { 'powrot' : powrot } )
 
+def wyloguj( request ):
+	logout( request )
+	return HttpResponseRedirect(reverse(menu))
+
 def log( request ):
 	try:
 		nazwa = request.POST['login']
@@ -69,7 +76,6 @@ def log( request ):
 				return render( request, 'logowanie.html', { 'blad' : "Konto jest nieaktywne" } )
 		else:
 			return render( request, 'logowanie.html', { 'blad' : "Dane niepoprawne" } )
-		return HttpResponse( "Nie ma takiego" )
 
 def obsluga(request):
 	# a co jesli nie jestem pracownikiem?
