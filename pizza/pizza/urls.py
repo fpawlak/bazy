@@ -14,5 +14,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls) ),
-	url(r'^menu/$', 'pizzadb.views.menu' )
+	url(r'^menu/$', 'pizzadb.views.menu' ),
+	url(r'^logowanie/$', 'pizzadb.views.logowanie' ),
+	url(r'^log/$', 'pizzadb.views.log' )
 )
