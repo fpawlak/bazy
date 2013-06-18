@@ -2,7 +2,7 @@
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie
+from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, User
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
@@ -58,6 +58,9 @@ def logowanie( request ):
 def wyloguj( request ):
 	logout( request )
 	return HttpResponseRedirect(reverse(menu))
+
+def rejestracja( request ):
+	return render( request, 'rejestracja.html' )
 
 def log( request ):
 	try:
