@@ -37,6 +37,12 @@ def dodajpizze(request):
 		nowa_pizza.skladniki.add(skladnik)
 	return HttpResponseRedirect(reverse(menu))
 
+def mojepizze(request):
+	if(request.user.is_anonymous()):
+		return render(request, 'logowanie.html')
+	pizze = PizzaKlienta.objects.filter(klient=request.user)
+	return render(request, 'mojepizze.html', { 'pizze' : pizze } )
+
 def logowanie( request ):
 	return render( request, 'logowanie.html' )
 

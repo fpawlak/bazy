@@ -1,0 +1,20 @@
+{% if pizze %}
+	<h1> Moje pizze </h1>
+	<dl>
+	{% for pizza in pizze %} 
+		<dt>{{ pizza.nazwa }} {{ pizza.cena }}</dt>
+			Składniki:
+				{% for skladnik in pizza.skladniki.all %}
+
+				{{ skladnik }},
+
+				{% endfor %}
+			
+		</dd>
+	{% endfor %}
+	</dl>
+{% else %}
+
+<h1> Nie masz żadnych pizz. </h1>
+
+{% endif %}
