@@ -60,6 +60,7 @@ def log( request ):
 	except ( KeyError ):
 		return render ( request, 'logowanie.html' )
 	else:
+<<<<<<< HEAD
 		uzytkownik = authenticate( username=nazwa, password=haslo )
 		if uzytkownik is not None:
 			if uzytkownik.is_active:
@@ -69,6 +70,7 @@ def log( request ):
 				return render( request, 'logowanie.html', { 'blad' : "Konto jest nieaktywne" } )
 		else:
 			return render( request, 'logowanie.html', { 'blad' : "Dane niepoprawne" } )
+=======
 		return HttpResponse( "Nie ma takiego" )
 
 def obsluga(request):
