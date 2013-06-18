@@ -23,7 +23,7 @@ def wlasnapizza(request):
 
 def dodajpizze(request):
 	if(request.user.is_anonymous()):
-		return render(request, 'logowanie.html')
+		return render(request, 'logowanie.html$powrot=%s' % request.path )
 	nazwa_pizzy = request.POST['NazwaPizzy']
 	skladniki = []
 	cena = 0
@@ -38,17 +38,28 @@ def dodajpizze(request):
 	return HttpResponseRedirect(reverse(menu))
 
 def logowanie( request ):
-	return render( request, 'logowanie.html' )
+	
+	try:
+		powrot = request.GET['powrot']
+	except ( KeyError ):
+		return render( request, 'logowanie.html', { 'powrot' : reverse(menu) } )
+	else: 
+		return render( request, 'logowanie.html', { 'powrot' : powrot } )
 
 def log( request ):
-	nazwa = request.POST['login']
-	haslo = request.POST['haslo']
-	uzytkownik = authenticate( username=nazwa, password=haslo )
-	if uzytkownik is not None:
-		if uzytkownik.is_active:
-			login( request, uzytkownik )
-			return HttpResponse( "JEST" )
-		else:
-			return HttpResponse( "BAN!!!" )
+	try:
+		nazwa = request.POST['login']
+		haslo = request.POST['haslo']
+		powrot = request.POST['powrot']
+	except ( KeyError ):
+		return render ( request, 'logowanie.html' )
 	else:
-		return HttpResponse( "Nie ma takiego" )
+		uzytkownik = authenticate( username=nazwa, password=haslo )
+		if uzytkownik is not None:
+			if uzytkownik.is_active:
+				login( request, uzytkownik )
+				return HttpResponseRedirect( powrot )
+			else:
+				return render( request, 'logowanie.html', { 'blad' : "Konto jest nieaktywne" } )
+		else:
+			return render( request, 'logowanie.html', { 'blad' : "Dane niepoprawne" } )
