@@ -26,6 +26,8 @@ def menu( request ):
 # 	return render(request, 'order.html', { 'menu' : menu })
 
 def wlasnapizza(request):
+	if(request.user.is_anonymous()):
+		return render(request, 'logowanie.html$powrot=%s' % request.path)
 	skladniki = Skladnik.objects.all()
 	return render(request, 'wlasnapizza.html', { 'skladniki' : skladniki } )
 
