@@ -1,0 +1,20 @@
+<h1> Zamówienia, które obsługuję: </h1>
+<dl>
+  {% for z in moje %} 
+  <dt>{{ z.klient.username }} {{ z.data }}</dt>
+  przycisk dostarcz
+  </dd>
+  {% endfor %}
+</dl>
+
+<h1> Zamówienia bez obsługującego: </h1>
+<dl>
+  {% for z in wolne %} 
+  <dt>{{ z.klient.username }} {{ z.data }}</dt>
+  przycisk obsłuż
+  </dd>
+  {% endfor %}
+</dl>
+
+
+

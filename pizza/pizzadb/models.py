@@ -60,7 +60,7 @@ class Pizza( models.Model ):
 class Zamowienie( models.Model ):
 	
 	klient = models.ForeignKey( User, related_name = 'skladajacy' )
-	pracownik = models.ForeignKey( User, related_name = 'obslugujacy' )
+	pracownik = models.ForeignKey( User, related_name = 'obslugujacy', blank = True, null = True )
 	data = models.DateField()
 	platnoscKarta = models.BooleanField()
 	telefon = models.CharField( max_length = 20 )

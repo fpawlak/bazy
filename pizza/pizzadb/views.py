@@ -1,8 +1,13 @@
 # Create your views here.
 
+from datetime import date
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+<<<<<<< HEAD
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, User
+=======
+from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, Zamowienie_Pizza, Zamowienie_PizzaKlienta, Zamowienie_Dodatek, Dodatek
+>>>>>>> d15cab7954e7b4bc4275fcbba533f2aaf0d55fb6
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
@@ -86,4 +91,85 @@ def obsluga(request):
 		return redirect( '/logowanie/?powrot=%s' % request.path )
 	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user)
 	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True)
-	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )	
+	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )
+
+def zamowienie(request):
+	menu = Pizza.objects.all()
+	custom = PizzaKlienta.objects.filter(klient=request.user)
+	dodatki = Dodatek.objects.all()
+	return render(request, 'zamowienie.html', { 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+
+
+def zlozzamowienie(request):
+	menu = Pizza.objects.all()
+	custom = PizzaKlienta.objects.filter(klient=request.user)
+	dodatki = Dodatek.objects.all()
+
+	# sprawdzamy, czy ilosci sa wartosciami liczbowymi i  czy nie
+	# sumuja sie do zera
+
+	laczna_ilosc = 0
+	
+	for pizza in menu:
+		try:
+			laczna_ilosc += int(request.POST['menu' + str(pizza.id)])
+		except:
+			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+
+	for pizza in custom:
+		try:
+			laczna_ilosc += int(request.POST['custom' + str(pizza.id)])
+		except:
+			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+
+	for dodatek in dodatki:
+		try:
+			laczna_ilosc += int(request.POST['dodatek' + str(dodatek.id)])
+		except:
+			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+		
+	if laczna_ilosc == 0:
+		return render(request, 'zamowienie.html', { 'error_message' : "Musisz cos zamowic!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+		
+	nowe_zamowienie = Zamowienie(
+		klient = request.user,
+		data = date.today(),
+		platnoscKarta = ("platnoscKarta" in request.POST.keys()),
+		telefon = request.POST['telefon'],
+		adres = request.POST['adres'],
+		dostarczono = False)
+	nowe_zamowienie.kwota = 0
+	nowe_zamowienie.save()
+	
+
+
+	for pizza in menu:
+		ilosc = int(request.POST['menu' + str(pizza.id)])
+		zamowienie_pizza = Zamowienie_Pizza(
+			zamowienie = nowe_zamowienie,
+			pizza = pizza,
+			ilosc = ilosc)
+		zamowienie_pizza.save()
+		nowe_zamowienie.kwota += pizza.cena * ilosc
+
+	for pizza in custom:
+		ilosc = int(request.POST['custom' + str(pizza.id)])
+		zamowienie_pizzaklienta = Zamowienie_PizzaKlienta(
+			zamowienie = nowe_zamowienie,
+			pizzaKlienta = pizza,
+			ilosc = ilosc)
+		zamowienie_pizzaklienta.save()
+		nowe_zamowienie.kwota += pizza.cena * ilosc
+
+			
+	for dodatek in dodatki:
+		ilosc = int(request.POST['dodatek' + str(dodatek.id)])
+		zamowienie_dodatek = Zamowienie_Dodatek(
+			zamowienie = nowe_zamowienie,
+			dodatek = dodatek,
+			ilosc = ilosc)
+		zamowienie_dodatek.save()
+		nowe_zamowienie.kwota += dodatek.cena * ilosc
+
+	nowe_zamowienie.save()
+	return HttpResponseRedirect("../menu/")
