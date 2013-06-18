@@ -21,4 +21,6 @@ urlpatterns = patterns('',
 	url(r'^logowanie/$', 'pizzadb.views.logowanie' ),
 	url(r'^log/$', 'pizzadb.views.log' ),
         url(r'^obsluga/$', 'pizzadb.views.obsluga' ),
+        url(r'^zamowienie/$', 'pizzadb.views.zamowienie' ),
+                       url(r'^zlozzamowienie/$', 'pizzadb.views.zlozzamowienie'),
 )
