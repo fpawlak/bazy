@@ -4,15 +4,18 @@ from datetime import date
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, Zamowienie_Pizza, Zamowienie_PizzaKlienta, Zamowienie_Dodatek, Dodatek
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 
 def index( request ):
 	return HttpResponse( "LOL jakie to jest zjebane." )
 
 def menu( request ):
 	p = Pizza.objects.all()
-	return render( request, 'menu.html', { 'list' : p } )
+	if request.user.is_authenticated():
+		return render( request, 'menu.html', { 'list' : p, 'zalogowany' : 'asdasd' } )
+	else:
+		return render( request, 'menu.html', { 'list' : p } )
 
 # def order(request):
 # 	menu = Pizza.objects.all()
@@ -24,7 +27,7 @@ def wlasnapizza(request):
 
 def dodajpizze(request):
 	if(request.user.is_anonymous()):
-		return render(request, 'logowanie.html$powrot=%s' % request.path)
+		return redirect('/logowanie/?powrot=%s' % request.path )
 	nazwa_pizzy = request.POST['NazwaPizzy']
 	skladniki = []
 	cena = 0
@@ -40,30 +43,45 @@ def dodajpizze(request):
 
 def mojepizze(request):
 	if(request.user.is_anonymous()):
-		return render(request, 'logowanie.html$powrot=%s' % request.path)
+		return redirect( '/logowanie/?powrot=%s' % request.path )
 	pizze = PizzaKlienta.objects.filter(klient=request.user)
 	return render(request, 'mojepizze.html', { 'pizze' : pizze } )
 
 def logowanie( request ):
-	return render( request, 'logowanie.html' )
+	
+	try:
+		powrot = request.GET['powrot']
+	except ( KeyError ):
+		return render( request, 'logowanie.html', { 'powrot' : reverse(menu) } )
+	else: 
+		return render( request, 'logowanie.html', { 'powrot' : powrot } )
+
+def wyloguj( request ):
+	logout( request )
+	return HttpResponseRedirect(reverse(menu))
 
 def log( request ):
-	nazwa = request.POST['login']
-	haslo = request.POST['haslo']
-	uzytkownik = authenticate( username=nazwa, password=haslo )
-	if uzytkownik is not None:
-		if uzytkownik.is_active:
-			login( request, uzytkownik )
-			return HttpResponse( "JEST" )
-		else:
-			return HttpResponse( "BAN!!!" )
+	try:
+		nazwa = request.POST['login']
+		haslo = request.POST['haslo']
+		powrot = request.POST['powrot']
+	except ( KeyError ):
+		return render ( request, 'logowanie.html' )
 	else:
-		return HttpResponse( "Nie ma takiego" )
+		uzytkownik = authenticate( username=nazwa, password=haslo )
+		if uzytkownik is not None:
+			if uzytkownik.is_active:
+				login( request, uzytkownik )
+				return HttpResponseRedirect( powrot )
+			else:
+				return render( request, 'logowanie.html', { 'blad' : "Konto jest nieaktywne" } )
+		else:
+			return render( request, 'logowanie.html', { 'blad' : "Dane niepoprawne" } )
 
 def obsluga(request):
 	# a co jesli nie jestem pracownikiem?
 	if(request.user.is_anonymous()):
-		return render(request, 'logowanie.html$powrot=%s' % request.path)
+		return redirect( '/logowanie/?powrot=%s' % request.path )
 	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user)
 	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True)
 	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )
