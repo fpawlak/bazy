@@ -117,14 +117,14 @@ def obsluga(request):
 
 def zamowienie(request):
 	menu = Pizza.objects.all()
-	custom = PizzaKlienta.objects.filter(klient=request.user)
+	custom = PizzaKlienta.objects.filter(klient=request.user) if request.user.is_authenticated() else []
 	dodatki = Dodatek.objects.all()
 	return render(request, 'zamowienie.html', { 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
 
 
 def zlozzamowienie(request):
 	menu = Pizza.objects.all()
-	custom = PizzaKlienta.objects.filter(klient=request.user)
+	custom = PizzaKlienta.objects.filter(klient=request.user) if request.user.is_authenticated() else []
 	dodatki = Dodatek.objects.all()
 
 	# sprawdzamy, czy ilosci sa wartosciami liczbowymi i  czy nie
