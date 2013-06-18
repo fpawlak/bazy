@@ -20,8 +20,6 @@
 
 {% endif %}
 
-<p>{{ zalogowany }}</p>
-
 {% if zalogowany %}
 <a href="{% url 'pizzadb.views.wyloguj' %}">Wyloguj</a>
 {% else %}

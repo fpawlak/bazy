@@ -3,6 +3,7 @@
 from datetime import date
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, User
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, Zamowienie_Pizza, Zamowienie_PizzaKlienta, Zamowienie_Dodatek, Dodatek
 from django.shortcuts import render, redirect
@@ -14,7 +15,7 @@ def index( request ):
 def menu( request ):
 	p = Pizza.objects.all()
 	if request.user.is_authenticated():
-		return render( request, 'menu.html', { 'list' : p, 'zalogowany' : 'asdasd' } )
+		return render( request, 'menu.html', { 'list' : p, 'zalogowany' : 't' } )
 	else:
 		return render( request, 'menu.html', { 'list' : p } )
 
@@ -66,6 +67,28 @@ def wyloguj( request ):
 def rejestracja( request ):
 	return render( request, 'rejestracja.html' )
 
+def rejestruj( request ):
+	try:
+		nazwa = request.POST['nazwa']
+		haslo = request.POST['haslo']
+		haslo2 = request.POST['haslo2']
+		imie = request.POST['imie']
+		nazwisko = request.POST['nazwisko']
+		email = request.POST['email']
+	except:
+		return render( request, 'rejestracja.html', { 'blad' : "Niepoprawne dane" } )
+	else:
+		if haslo != haslo2:
+			return render( request, 'rejestracja.html', { 'blad' : "Niepoprawne dane" } )
+		else:
+			user = User.objects.create_user( username = nazwa, password = haslo )
+			user.first_name = imie
+			user.last_name = nazwisko
+			user.email = email
+			user.save()
+			return redirect( '/logowanie/' )
+
+
 def log( request ):
 	try:
 		nazwa = request.POST['login']
@@ -78,7 +101,7 @@ def log( request ):
 		if uzytkownik is not None:
 			if uzytkownik.is_active:
 				login( request, uzytkownik )
-				return HttpResponseRedirect( powrot )
+				return redirect( powrot )
 			else:
 				return render( request, 'logowanie.html', { 'blad' : "Konto jest nieaktywne" } )
 		else:
