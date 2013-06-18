@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login
 
 def index( request ):
 	return HttpResponse( "LOL jakie to jest zjebane." )
@@ -35,3 +36,19 @@ def dodajpizze(request):
 	for skladnik in skladniki:
 		nowa_pizza.skladniki.add(skladnik)
 	return HttpResponseRedirect(reverse(menu))
+
+def logowanie( request ):
+	return render( request, 'logowanie.html' )
+
+def log( request ):
+	nazwa = request.POST['login']
+	haslo = request.POST['haslo']
+	uzytkownik = authenticate( username=nazwa, password=haslo )
+	if uzytkownik is not None:
+		if uzytkownik.is_active:
+			login( request, uzytkownik )
+			return HttpResponse( "JEST" )
+		else:
+			return HttpResponse( "BAN!!!" )
+	else:
+		return HttpResponse( "Nie ma takiego" )
