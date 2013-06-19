@@ -1,3 +1,9 @@
+{% if zalogowany == "t" %}
+
+<a href ="{% url 'pizzadb.views.wyloguj' %}">Wyloguj się</a>
+
+{% else %}
+
 <h1> Logowanie </h2>
 
 {% if blad %}
@@ -14,3 +20,5 @@
 </form>
 
 <a href="{% url 'pizzadb.views.rejestracja' %}">Zarejestruj się</a>
+
+{% endif %}

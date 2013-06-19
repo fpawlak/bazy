@@ -57,16 +57,20 @@ def mojepizze(request):
 
 def logowanie( request ):
 	
+	zalogowany = 't' if request.user.is_authenticated() else 'f'
+	
 	try:
 		powrot = request.GET['powrot']
 	except ( KeyError ):
-		return render( request, 'logowanie.html', { 'powrot' : reverse(menu) } )
+		return render( request, 'logowanie.html', { 'powrot' : reverse(menu), 'zalogowany' : zalogowany } )
 	else: 
-		return render( request, 'logowanie.html', { 'powrot' : powrot } )
+		return render( request, 'logowanie.html', { 'powrot' : powrot, 'zalogowany' : zalogowany  } )
+
 
 def wyloguj( request ):
+	
 	logout( request )
-	return HttpResponseRedirect( reverse(menu) ) 
+	return HttpResponseRedirect( reverse(menu) )
 
 def rejestracja( request ):
 	return render( request, 'rejestracja.html' )
