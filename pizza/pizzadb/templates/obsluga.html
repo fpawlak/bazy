@@ -1,20 +1,110 @@
+<form action="../dostarczzamowienie/" method="post">
+  {% csrf_token %}
+
 <h1> Zamówienia, które obsługuję: </h1>
-<dl>
-  {% for z in moje %} 
-  <dt>{{ z.klient.username }} {{ z.data }}</dt>
-  przycisk dostarcz
-  </dd>
+  {% for z in moje %}
+      <input type="checkbox" name="zam{{ z.id }}">
+      {{ z.klient.username }} {{ z.data }}<br/>
+      płatność kartą: {% if z.platnoscKarta %} tak {% else %} nie {% endif %}<br/>
+      telefon: {{ z.telefon }}<br />
+      adres: {{ z.adres }}<br />
+      kwota: {{ z.kwota }}<br /><Br />
+    
+      pizze: <br />
+      {% for pizza in z.pizze.all %}
+         {{ pizza.nazwa }} <br />
+      {% endfor %}
+
+      {% if not z.pizze.all %}
+      brak
+      {% endif %}
+    
+      <br />
+    
+      pizze klienta: <br />
+      {% for pizza in z.pizzeKlienta.all %}
+          składniki: {% for skladnik in pizza.skladniki.all %} {{ skladnik }},  {% endfor %} <br />
+      {% endfor %}
+
+      {% if not z.pizzeKlienta.all %}
+      brak
+      {% endif %}
+    
+      <br />
+      <br />
+    
+      dodatki: <br />
+      {% for dodatek in z.dodatki.all %}
+         {{ dodatek.nazwa }} <br />
+      {% endfor %}
+
+      {% if not z.dodatki.all %}
+      brak
+      {% endif %}
+
+      <br />
+      <br />
+      
+      <hr />
   {% endfor %}
-</dl>
+{% if moje %}
+            <input type="submit" value="Dostarczono" />
+	    {% endif %}
+	    </form>
+
+<form action="../obsluzzamowienie/" method="post">
+  {% csrf_token %}
 
 <h1> Zamówienia bez obsługującego: </h1>
-<dl>
-  {% for z in wolne %} 
-  <dt>{{ z.klient.username }} {{ z.data }}</dt>
-  przycisk obsłuż
-  </dd>
+  {% for z in wolne %}
+      <input type="checkbox" name="zam{{ z.id }}">
+      {{ z.klient.username }} {{ z.data }}<br/>
+      płatność kartą: {% if z.platnoscKarta %} tak {% else %} nie {% endif %}<br/>
+      telefon: {{ z.telefon }}<br />
+      adres: {{ z.adres }}<br />
+      kwota: {{ z.kwota }}<br /><Br />
+    
+      pizze: <br />
+      {% for pizza in z.pizze.all %}
+         {{ pizza.nazwa }} <br />
+      {% endfor %}
+
+      {% if not z.pizze.all %}
+      brak
+      {% endif %}
+    
+      <br />
+    
+      pizze klienta: <br />
+      {% for pizza in z.pizzeKlienta.all %}
+          składniki: {% for skladnik in pizza.skladniki.all %} {{ skladnik }},  {% endfor %} <br />
+      {% endfor %}
+
+      {% if not z.pizzeKlienta.all %}
+      brak
+      {% endif %}
+    
+      <br />
+      <br />
+    
+      dodatki: <br />
+      {% for dodatek in z.dodatki.all %}
+         {{ dodatek.nazwa }} <br />
+      {% endfor %}
+
+      {% if not z.dodatki.all %}
+      brak
+      {% endif %}
+
+      <br />
+      <br />
+      
+      <hr />
   {% endfor %}
-</dl>
+{% if wolne %}
+      <input type="submit" value="Obsłuż" />
+{% endif %}
 
 
 
+</form>

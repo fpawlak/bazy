@@ -120,9 +120,26 @@ def obsluga(request):
 	# a co jesli nie jestem pracownikiem?
 	if(request.user.is_anonymous()):
 		return redirect( '/logowanie/?powrot=%s' % request.path )
-	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user)
-	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True)
+	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user, dostarczono=False).order_by('-data')
+	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True).order_by('-data')
 	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )
+
+def dostarczzamowienie(request):
+	for element in request.POST.keys():
+		if element[:3] == 'zam':
+			zamowienie = Zamowienie.objects.get(id = int(element[3:]))
+			zamowienie.dostarczono = True
+			zamowienie.save()
+	return HttpResponseRedirect("../obsluga/")
+
+def obsluzzamowienie(request):
+	for element in request.POST.keys():
+		if element[:3] == 'zam':
+			zamowienie = Zamowienie.objects.get(id = int(element[3:]))
+			zamowienie.pracownik = request.user
+			zamowienie.save()
+	return HttpResponseRedirect("../obsluga/")
+
 
 def zamowienie(request):
 	menu = Pizza.objects.all()
