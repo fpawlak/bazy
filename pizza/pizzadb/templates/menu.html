@@ -1,9 +1,12 @@
-{% if list %}
-	<h1> Menu </h1>
-	<dl>
-	{% for pizza in list %} 
-		<dt>{{ pizza.nazwa }} {{ pizza.cena }}</dt>
-		<dd>Opis: {{ pizza.opis }}<br>
+<h1>Menu</h1>
+
+<p>
+{% if pizze %}
+<h2>Pizze</h2>
+	<table>
+	{% for pizza in pizze %} 
+		<tr><td><dt>{{ pizza.nazwa }}</dt>
+		<dd>
 			Składniki:
 				{% for skladnik in pizza.skladniki.all %}
 
@@ -11,14 +14,61 @@
 
 				{% endfor %}
 			
-		</dd>
+		</dd></td><td>{{ pizza.cena }}</td></tr>
 	{% endfor %}
-	</dl>
+	</table>
 {% else %}
 
-<h1> Nie ma pozycji w menu. </h1>
+<h2>Nie ma pizzy </h2>
 
 {% endif %}
+</p>
+
+<p>
+{% if napoje %}
+<h2>Napoje</h2>
+	<table>
+	{% for napoj in napoje %} 
+		<tr><td>{{ napoj.nazwa }}</td><td>{{ napoj.cena }}</td></tr>
+	{% endfor %}
+	</table>
+{% else %}
+
+<h2>Nie ma napojów </h2>
+
+{% endif %}
+</p>
+
+<p>
+{% if sosy %}
+<h2>Sosy</h2>
+	<table>
+	{% for sos in sosy %} 
+		<tr><td>{{ sos.nazwa }}</td><td>{{ sos.cena }}</td></tr>
+	{% endfor %}
+	</table>
+{% else %}
+
+<h2>Nie ma sosów </h2>
+
+{% endif %}
+</p>
+
+<p>
+{% if salatki %}
+<h2>Sałatki</h2>
+	<table>
+	{% for salatka in salatki %} 
+		<tr><td>{{ salatka.nazwa }}</td><td>{{ salatka.cena }}</td></tr>
+	{% endfor %}
+	</table>
+{% else %}
+
+<h2>Nie ma sałatek </h2>
+
+{% endif %}
+</p>
+
 
 {% if zalogowany %}
 <a href="{% url 'pizzadb.views.wyloguj' %}">Wyloguj</a>

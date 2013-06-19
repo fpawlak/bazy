@@ -1,4 +1,5 @@
 # Create your views here.
+# -*- coding: utf-8 -*-
 
 from datetime import date
 from django.http import HttpResponse, HttpResponseRedirect
@@ -14,10 +15,13 @@ def index( request ):
 
 def menu( request ):
 	p = Pizza.objects.all()
+	napoje = Dodatek.objects.all().filter( rodzaj = 'n' )
+	sosy = Dodatek.objects.all().filter( rodzaj = 's' )
+	salatki = Dodatek.objects.all().filter( rodzaj = 'j' )
 	if request.user.is_authenticated():
-		return render( request, 'menu.html', { 'list' : p, 'zalogowany' : 't' } )
+		return render( request, 'menu.html', { 'pizze' : p, 'zalogowany' : 't', 'napoje' : napoje, 'sosy' : sosy, 'salatki' : salatki } )
 	else:
-		return render( request, 'menu.html', { 'list' : p } )
+		return render( request, 'menu.html', { 'pizze' : p, 'napoje' : napoje, 'sosy' : sosy, 'salatki' : salatki } )
 
 # def order(request):
 # 	menu = Pizza.objects.all()
@@ -62,7 +66,7 @@ def logowanie( request ):
 
 def wyloguj( request ):
 	logout( request )
-	return HttpResponseRedirect(reverse(menu))
+	return HttpResponseRedirect( reverse(menu) ) 
 
 def rejestracja( request ):
 	return render( request, 'rejestracja.html' )
@@ -81,12 +85,17 @@ def rejestruj( request ):
 		if haslo != haslo2:
 			return render( request, 'rejestracja.html', { 'blad' : "Niepoprawne dane" } )
 		else:
-			user = User.objects.create_user( username = nazwa, password = haslo )
-			user.first_name = imie
-			user.last_name = nazwisko
-			user.email = email
-			user.save()
-			return redirect( '/logowanie/' )
+			try:
+				ktos = User.objects.get( username = nazwa )
+			except( User.DoesNotExist ):
+				user = User.objects.create_user( username = nazwa, password = haslo )
+				user.first_name = imie
+				user.last_name = nazwisko
+				user.email = email
+				user.save()
+				return redirect( '/logowanie/' )
+			else:
+				return render( request, 'rejestracja.html', { 'blad' : "Nazwa zajęta" } )
 
 
 def log( request ):
