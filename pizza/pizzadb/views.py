@@ -47,7 +47,7 @@ def dodajpizze(request):
 	nowa_pizza.save()
 	for skladnik in skladniki:
 		nowa_pizza.skladniki.add(skladnik)
-	return HttpResponseRedirect(reverse(menu))
+	return HttpResponseRedirect(reverse(mojepizze))
 
 def mojepizze(request):
 	if(request.user.is_anonymous()):
