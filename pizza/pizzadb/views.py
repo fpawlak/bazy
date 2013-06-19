@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, User, Uzytkownik
@@ -122,9 +122,11 @@ def log( request ):
 			return render( request, 'logowanie.html', { 'blad' : "Dane niepoprawne" } )
 
 def obsluga(request):
-	# a co jesli nie jestem pracownikiem?
 	if(request.user.is_anonymous()):
 		return redirect( '/logowanie/?powrot=%s' % request.path )
+	if( request.user.uzytkownik.funkcja == 'u' ):
+		return HttpResponseForbidden( '<h1>Ty oszuście</h1>' )
+	
 	moje_zamowienia = Zamowienie.objects.filter(pracownik=request.user, dostarczono=False).order_by('-data')
 	wolne_zamowienia = Zamowienie.objects.filter(pracownik__isnull=True).order_by('-data')
 	return render( request, 'obsluga.html', { 'moje' : moje_zamowienia, 'wolne' : wolne_zamowienia } )

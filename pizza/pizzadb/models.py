@@ -12,7 +12,7 @@ class Uzytkownik( models.Model ):
 	email = models.CharField( max_length = 50 )
 
 	def __unicode__( self ):
-		return self.Imie + self.Nazwisko
+		return self.imie + self.nazwisko
 
 #class Pracownik( models.Model ):
 #
