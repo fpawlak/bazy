@@ -5,7 +5,7 @@ from datetime import date
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, User
+from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, User, Uzytkownik
 from pizzadb.models import Pizza, Skladnik, PizzaKlienta, Zamowienie, Zamowienie_Pizza, Zamowienie_PizzaKlienta, Zamowienie_Dodatek, Dodatek
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -78,6 +78,8 @@ def rejestruj( request ):
 		haslo2 = request.POST['haslo2']
 		imie = request.POST['imie']
 		nazwisko = request.POST['nazwisko']
+		adres = request.POST['adres']
+		telefon = request.POST['telefon']
 		email = request.POST['email']
 	except:
 		return render( request, 'rejestracja.html', { 'blad' : "Niepoprawne dane" } )
@@ -89,10 +91,9 @@ def rejestruj( request ):
 				ktos = User.objects.get( username = nazwa )
 			except( User.DoesNotExist ):
 				user = User.objects.create_user( username = nazwa, password = haslo )
-				user.first_name = imie
-				user.last_name = nazwisko
-				user.email = email
+				uzytkownik = Uzytkownik( imie = imie, nazwisko = nazwisko, adres = adres, telefon = telefon, funkcja = 'u', email = email, usrId = user )
 				user.save()
+				uzytkownik.save()
 				return redirect( '/logowanie/' )
 			else:
 				return render( request, 'rejestracja.html', { 'blad' : "Nazwa zajęta" } )
@@ -128,13 +129,17 @@ def zamowienie(request):
 	menu = Pizza.objects.all()
 	custom = PizzaKlienta.objects.filter(klient=request.user) if request.user.is_authenticated() else []
 	dodatki = Dodatek.objects.all()
-	return render(request, 'zamowienie.html', { 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+	adres = request.user.uzytkownik.adres if request.user.is_authenticated() else ''
+	telefon = request.user.uzytkownik.telefon if request.user.is_authenticated() else ''
+	return render(request, 'zamowienie.html', { 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
 
 
 def zlozzamowienie(request):
 	menu = Pizza.objects.all()
 	custom = PizzaKlienta.objects.filter(klient=request.user) if request.user.is_authenticated() else []
 	dodatki = Dodatek.objects.all()
+	adres = request.user.uzytkownik.adres if request.user.is_authenticated() else ''
+	telefon = request.user.uzytkownik.telefon if request.user.is_authenticated() else ''
 
 	# sprawdzamy, czy ilosci sa wartosciami liczbowymi i  czy nie
 	# sumuja sie do zera
@@ -145,22 +150,22 @@ def zlozzamowienie(request):
 		try:
 			laczna_ilosc += int(request.POST['menu' + str(pizza.id)])
 		except:
-			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
 
 	for pizza in custom:
 		try:
 			laczna_ilosc += int(request.POST['custom' + str(pizza.id)])
 		except:
-			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
 
 	for dodatek in dodatki:
 		try:
 			laczna_ilosc += int(request.POST['dodatek' + str(dodatek.id)])
 		except:
-			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
 		
 	if laczna_ilosc == 0:
-		return render(request, 'zamowienie.html', { 'error_message' : "Musisz cos zamowic!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki })
+		return render(request, 'zamowienie.html', { 'error_message' : "Musisz cos zamowic!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
 		
 	nowe_zamowienie = Zamowienie(
 		klient = request.user,

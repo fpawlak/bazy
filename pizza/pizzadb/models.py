@@ -9,6 +9,7 @@ class Uzytkownik( models.Model ):
 	telefon = models.CharField( max_length = 20 )
 	funkcja = models.CharField( max_length = 1 )
 	usrId = models.OneToOneField( User )
+	email = models.CharField( max_length = 50 )
 
 	def __unicode__( self ):
 		return self.Imie + self.Nazwisko
