@@ -11,8 +11,9 @@
       kwota: {{ z.kwota }}<br /><Br />
     
       pizze: <br />
-      {% for pizza in z.pizze.all %}
-         {{ pizza.nazwa }} <br />
+      {% for z_pizza in z.zamowienie_pizza_set.all %}
+         
+         {{ z_pizza.pizza.nazwa }}, ilość: {{ z_pizza.ilosc }} <br />
       {% endfor %}
 
       {% if not z.pizze.all %}
@@ -22,8 +23,9 @@
       <br />
     
       pizze klienta: <br />
-      {% for pizza in z.pizzeKlienta.all %}
-          składniki: {% for skladnik in pizza.skladniki.all %} {{ skladnik }},  {% endfor %} <br />
+      {% for z_pizzaklienta in z.zamowienie_pizzaklienta_set.all %}
+          składniki: {% for skladnik in z_pizzaklienta.pizzaKlienta.skladniki.all %} {{ skladnik }},  {% endfor %} <br />
+      ilość: z_pizzaklienta.ilosc <br />
       {% endfor %}
 
       {% if not z.pizzeKlienta.all %}
@@ -34,8 +36,8 @@
       <br />
     
       dodatki: <br />
-      {% for dodatek in z.dodatki.all %}
-         {{ dodatek.nazwa }} <br />
+      {% for z_dodatek in z.zamowienie_dodatek_set.all %}
+         {{ z_dodatek.dodatek.nazwa }}, ilość: {{ z_dodatek.ilosc }} <br />
       {% endfor %}
 
       {% if not z.dodatki.all %}
@@ -65,8 +67,9 @@
       kwota: {{ z.kwota }}<br /><Br />
     
       pizze: <br />
-      {% for pizza in z.pizze.all %}
-         {{ pizza.nazwa }} <br />
+      {% for z_pizza in z.zamowienie_pizza_set.all %}
+         
+         {{ z_pizza.pizza.nazwa }}, ilość: {{ z_pizza.ilosc }} <br />
       {% endfor %}
 
       {% if not z.pizze.all %}
@@ -76,8 +79,9 @@
       <br />
     
       pizze klienta: <br />
-      {% for pizza in z.pizzeKlienta.all %}
-          składniki: {% for skladnik in pizza.skladniki.all %} {{ skladnik }},  {% endfor %} <br />
+      {% for z_pizzaklienta in z.zamowienie_pizzaklienta_set.all %}
+          składniki: {% for skladnik in z_pizzaklienta.pizzaKlienta.skladniki.all %} {{ skladnik }},  {% endfor %} <br />
+      ilość: z_pizzaklienta.ilosc <br />
       {% endfor %}
 
       {% if not z.pizzeKlienta.all %}
@@ -88,8 +92,8 @@
       <br />
     
       dodatki: <br />
-      {% for dodatek in z.dodatki.all %}
-         {{ dodatek.nazwa }} <br />
+      {% for z_dodatek in z.zamowienie_dodatek_set.all %}
+         {{ z_dodatek.dodatek.nazwa }}, ilość: {{ z_dodatek.ilosc }} <br />
       {% endfor %}
 
       {% if not z.dodatki.all %}
