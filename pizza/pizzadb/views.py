@@ -169,21 +169,34 @@ def zlozzamowienie(request):
 	
 	for pizza in menu:
 		try:
-			laczna_ilosc += int(request.POST['menu' + str(pizza.id)])
+			ilosc = int(request.POST['menu' + str(pizza.id)])
 		except:
 			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
+		else:
+			if ilosc < 0:
+				return render(request, 'zamowienie.html', { 'error_message' : "Podales ujenna ilosc!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
+			laczna_ilosc += ilosc
 
 	for pizza in custom:
 		try:
-			laczna_ilosc += int(request.POST['custom' + str(pizza.id)])
+			ilosc = int(request.POST['custom' + str(pizza.id)])
 		except:
 			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
+		else:
+			if ilosc < 0:
+				return render(request, 'zamowienie.html', { 'error_message' : "Podales ujenna ilosc!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
+			laczna_ilosc += ilosc
+
 
 	for dodatek in dodatki:
 		try:
-			laczna_ilosc += int(request.POST['dodatek' + str(dodatek.id)])
+			ilosc = int(request.POST['dodatek' + str(dodatek.id)])
 		except:
 			return render(request, 'zamowienie.html', { 'error_message' : "Musisz podac wartosci liczbowe!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
+		else:
+			if ilosc < 0:
+				return render(request, 'zamowienie.html', { 'error_message' : "Podales ujenna ilosc!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
+			laczna_ilosc += ilosc
 		
 	if laczna_ilosc == 0:
 		return render(request, 'zamowienie.html', { 'error_message' : "Musisz cos zamowic!", 'menu' : menu, 'custom' : custom, 'dodatki' : dodatki, 'adres' : adres, 'telefon' : telefon })
